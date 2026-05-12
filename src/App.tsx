@@ -21,6 +21,7 @@ import {
 } from '@mui/material'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import Tooltip from '@mui/material/Tooltip'
 import ArticleIcon from '@mui/icons-material/Article'
 import PersonIcon from '@mui/icons-material/Person'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -82,237 +83,185 @@ interface SearchResult {
   person?: PersonData
 }
 
-const SIM_HYON_SOP_PERSON: PersonData = {
-  dob: '25 November 1983',
-  citizenship: "Democratic People's Republic of Korea",
-  lists: ['North Korea'],
-  listSource: 'Japan MOF',
+const MADOFF_PERSON: PersonData = {
+  dob: '29 April 1938',
+  citizenship: 'United States of America',
+  lists: ['Securities Fraud', 'Federal Inmate (Deceased)', 'Adverse Media'],
+  listSource: 'US DOJ / SDNY',
   aliases: [
     {
-      name: 'Sim Hyon Sop',
+      name: 'Bernard Lawrence Madoff',
       ids: [
         {
-          type: 'Digital Currency Address - Currency Unspecified',
-          number: '0x4f47bc496083c727c5fbe3ce9cdf2b0f6496270c',
+          type: 'Federal Bureau of Prisons Register',
+          number: '61727-054',
+          country: 'United States of America',
         },
         {
-          type: 'Passport',
-          number: '109484100',
-          country: "Democratic People's Republic of Korea",
-          expDate: '24 December 2024',
+          type: 'SDNY Case',
+          number: '1:09-cr-00213',
+          country: 'United States of America',
+          issueDate: '12 March 2009',
         },
       ],
     },
     {
-      name: "Sim Hyo'n-so'p",
-      weakAkas: ['Sim Sop', 'S Sop - (Weak AKA)', 'Sop - (Weak AKA)', 'シム・ヒョンソプ - (Weak AKA)'],
+      name: 'Bernie Madoff',
+      weakAkas: [
+        'Madoff, Bernard - (Strong AKA)',
+        'B. L. Madoff - (Weak AKA)',
+        'Bernie L. Madoff - (Weak AKA)',
+        'Madoff B - (Weak AKA)',
+      ],
     },
   ],
-  locations: ['Pyongyang, DPRK', 'Dubai, UAE (operational)'],
+  locations: [
+    'New York, NY, USA (residence)',
+    'Butner FCI, North Carolina, USA (incarceration 2009–2021)',
+  ],
   notes: [
-    'Designated by OFAC for laundering cryptocurrency on behalf of the DPRK regime.',
-    'Linked to Green Alpine Trading, LLC (UAE) and Chinese facilitators Lu Huaying / Zhang Jian.',
+    'Convicted June 2009 of 11 federal felonies after operating a $65B Ponzi scheme through Bernard L. Madoff Investment Securities LLC.',
+    'Sentenced to 150 years in federal prison; died at Butner FCI on 14 April 2021.',
+    'Former chairman of NASDAQ. Public record via SDNY court filings and SEC litigation releases.',
   ],
 }
 
+function person(
+  id: number,
+  title: string,
+  subtitle: string,
+  score: number,
+  override: Partial<PersonData> = {},
+): SearchResult {
+  return {
+    id,
+    type: 'person',
+    title,
+    subtitle,
+    score,
+    titleRed: true,
+    person: { ...MADOFF_PERSON, ...override },
+  }
+}
+
 const RESULTS: SearchResult[] = [
-  {
-    id: 1,
-    type: 'person',
-    title: 'Sim Hyon Sop',
-    subtitle: 'Japan MOF',
-    score: 100,
-    titleRed: true,
-    person: SIM_HYON_SOP_PERSON,
-  },
-  {
-    id: 2,
-    type: 'article',
-    title: 'U.S. Shuts Down North Korean Crypto Money Laundering Network',
-    subtitle:
-      'The U.S. Treasury Department shut down a North Korean money laundering network that used crypto to clean millions of dollars. Green Alpine Trading, LLC, and Chinese nationals were sanctioned.',
-    score: 98,
-    article: {
-      providerId: '7327346686',
-      date: 'December 17, 2024',
-      source: 'CoinDesk',
-      lists: [
-        'Bribery and Corruption',
-        'Bribery and Corruption: Bribery',
-        'Crime Law and Justice: Crime',
-        'Crimes',
-        'Financial Crimes',
-        'Financial Crimes: Corporate Crime',
-      ],
-      listSource: 'Adverse Media',
-      url: 'https://www.coindesk.com/policy/2024/12/17/u-s-shuts-down-north-korean-crypto-money-laundering-network',
-      content: [
-        'OFAC says a front company in the UAE had been converting crypto into cash for North Korea.',
-        'What to know',
-        'The U.S. Treasury Department said it had shut down a North Korean money laundering network had been converting crypto into cash for the country.',
-        'U.S. added an UAE-based front company and two Chinese nationals to sanctions list.',
-        'The U.S. Treasury Department on Tuesday said it had shut down a North Korean money laundering network that used crypto to clean millions of dollars for the hermit kingdom, a global leader in crypto crime.',
-        "Don't miss another story.",
-        "A front company in the UAE called Green Alpine Trading, LLC, had been converting crypto into cash for North Korea, according to a press release by the Treasury's Office of Foreign Assets Control (OFAC). The U.S. government's sanctions wing struck that company on its blacklist as well as two Chinese nationals who had been participating in the network since 2022.",
-        'The United Arab Emirates partnered in the takedown, according to the press release. It is not clear what\'s become of the two now-sanctioned Chinese nationals, Lu Huaying and Zhang Jian. They worked in cahoots with DPRK "agent" Sim Hyon Sop, the press release said.',
-        "North Korea is among the most aggressive state actors to target the crypto industry. Its agents have allegedly stolen billions of dollars worth of crypto to fund the country's nuclear weapons program. But making digital cash useful, requires its conversion into fiat.",
-        'Green Alpine may have played a small part in that web. The Treasury press release didn\'t say what money it laundered, beyond that it was from "illicit revenue generation schemes."',
-      ],
-    },
-  },
-  {
-    id: 3,
-    type: 'article',
-    title: "UAE Company Caught in Crypto Laundering Scheme Supporting North Korea's WMDs",
-    subtitle:
-      "Lu Huaying, Zhang Jian, and Green Alpine Trading, LLC have been sanctioned for channeling millions in cryptocurrency to finance North Korea's WMD and ballistic missile programs.",
-    score: 98,
-  },
-  {
-    id: 4,
-    type: 'article',
-    title: 'US Treasury and UAE target North Korean digital asset launderers',
-    subtitle:
-      "The US Treasury sanctioned Chinese citizens Lu Huaying and Zhang Jian, along with UAE-based Green Alpine Trading, for laundering money for North Korea's weapons programs.",
-    score: 98,
-  },
-  {
-    id: 5,
-    type: 'article',
-    title: 'DoJ, Treasury accuses 3 men of laundering crypto for North Korea',
-    subtitle:
-      "Lu Huaying and Zhang Jian are sanctioned for laundering stolen cryptocurrency for North Korea's weapons programs. The US is pursuing them with indictments and sanctions.",
-    score: 97,
-  },
-  {
-    id: 6,
-    type: 'article',
-    title: 'North Korean crypto network in UAE hit by U.S. sanctions',
-    subtitle:
-      "The U.S. sanctioned Chinese nationals Lu Huaying and Zhang Jian, along with Green Alpine Trading, LLC, for laundering millions in illicit funds for North Korea's weapons programs.",
-    score: 97,
-  },
-  {
-    id: 7,
-    type: 'article',
-    title: 'Tobacco Giant to Pay $635 Million Penalty for Violating North Korea Sanctions',
-    subtitle:
-      'British American Tobacco will pay over $635 million for sanctions violations after a subsidiary admitted to selling tobacco products to North Korea. Sim Hyon-Sop, Qin Guoming, and Han Linlin were also charged.',
-    score: 97,
-  },
-  {
-    id: 8,
-    type: 'article',
-    title:
-      'Treasury Department Disrupts North Korean Crypto Money Laundering Operation Using UAE-Based Shell Company',
-    subtitle:
-      "The U.S. Treasury Department is dismantling North Korea's digital asset money laundering network by sanctioning Chinese nationals Lu Huaying and Zhang Jian, who used Green Alpine Trading in the UAE.",
-    score: 97,
-  },
-  {
-    id: 9,
-    type: 'article',
-    title: 'Treasury Disrupts North Korean Digital Assets Money Laundering Network',
-    subtitle:
-      "Lu Huaying and Zhang Jian are sanctioned for laundering millions in illicit funds for North Korea's WMD programs, orchestrated by Sim Hyon Sop.",
-    score: 97,
-  },
-  {
-    id: 10,
-    type: 'article',
-    title: 'US Sanctions 2 Chinese Nationals for Financing North Korean Weapons Development',
-    subtitle:
-      "Lu Huaying and Zhang Jian are sanctioned for laundering money, including via cryptocurrency, for North Korea's weapons program, part of a network run by Sim Hyon Sop.",
-    score: 97,
-  },
-  {
-    id: 11,
-    type: 'article',
-    title: "US imposes sanctions on North Korea's crypto laundering network",
-    subtitle:
-      "The U.S. Treasury Department imposed sanctions on Lu Huaying and Zhang Jian for laundering cryptocurrencies to fund North Korea's weapons programs.",
-    score: 97,
-  },
-  {
-    id: 12,
-    type: 'article',
-    title: 'US sanctions 2 Chinese nationals over money laundering to support North Korea',
-    subtitle:
-      'Action targets North Korean money laundering linked to missiles and other weapons of mass destruction.',
-    score: 97,
-  },
-  {
-    id: 13,
-    type: 'article',
-    title: 'Treasury sanctions North Korean money laundering network',
-    subtitle:
-      'The Treasury Department sanctioned individuals Sim Hyon Sop and Zhang Jian, and entity Green Alpine Trading, for laundering cryptocurrency to North Korea to bolster its weapons programs.',
-    score: 96,
-  },
-  {
-    id: 14,
-    type: 'article',
-    title: 'U.S. Sanctions DPRK Crypto Money Laundering Network',
-    subtitle:
-      "The U.S. sanctions Lu Huaying and Green Alpine Trading, LLC for money laundering and cryptocurrency conversion benefitting North Korea's weapons programs.",
-    score: 96,
-  },
-  {
-    id: 15,
-    type: 'article',
-    title: 'U.S. Treasury Targets North Korean Money Laundering Network Involving Digital Assets',
-    subtitle:
-      "The U.S. Treasury sanctioned individuals including Zhang Jian, and Green Alpine Trading, LLC for laundering millions in illicit funds to North Korea's WMD programs, working under Sim Hyon Sop.",
-    score: 96,
-  },
-  {
-    id: 16,
-    type: 'article',
-    title:
-      "US Department of Treasury's Office of Foreign Assets Control Sanctions Two Individuals Related to North Korea Crypto Laundering Play",
-    subtitle:
-      "The U.S. Department of the Treasury's Office of Foreign Assets Control (OFAC) has announced sanctions against two individuals and a single-entity regarding money laundering to the benefit of North...",
-    score: 96,
-  },
-  {
-    id: 17,
-    type: 'person',
-    title: 'SIM HYON-SOP',
-    subtitle: 'US FBI Most Wanted',
-    score: 96,
-    titleRed: true,
-    person: {
-      ...SIM_HYON_SOP_PERSON,
-      listSource: 'US FBI Most Wanted',
-      lists: ['FBI Most Wanted', 'Cybercrime'],
-    },
-  },
-  {
-    id: 18,
-    type: 'person',
-    title: 'Hyon Sop Sim',
-    subtitle: 'High Risk Ownership',
-    score: 91,
-    titleRed: true,
-    person: {
-      ...SIM_HYON_SOP_PERSON,
-      listSource: 'High Risk Ownership',
-      lists: ['Adverse Media', 'Beneficial Ownership Risk'],
-    },
-  },
-  {
-    id: 19,
-    type: 'person',
-    title: 'Hyon Sop Sim',
-    subtitle: 'US OFAC SDN',
-    score: 91,
-    titleRed: true,
-    person: {
-      ...SIM_HYON_SOP_PERSON,
-      listSource: 'US OFAC SDN',
-      lists: ['OFAC SDN', 'North Korea Sanctions'],
-    },
-  },
+  person(1, 'Bernard L. Madoff', 'US DOJ — SDNY Court Records', 100),
+  person(2, 'Bernard Lawrence Madoff', 'US Federal Bureau of Prisons (Deceased)', 99, {
+    listSource: 'US Federal Bureau of Prisons',
+    lists: ['Federal Inmate (Deceased)', 'Securities Fraud'],
+  }),
+  person(3, 'Bernie Madoff', 'SEC Enforcement Action', 98, {
+    listSource: 'US SEC Litigation Releases',
+    lists: ['SEC Enforcement', 'Securities Fraud'],
+  }),
+  person(4, 'Bernhard Madoff', 'Adverse Media — Reuters', 95, {
+    listSource: 'Reuters Adverse Media',
+    lists: ['Adverse Media', 'Financial Crime'],
+  }),
+  person(5, 'Bernard L Madoff', 'FINRA Disciplinary Action', 96, {
+    listSource: 'FINRA BrokerCheck',
+    lists: ['Securities Disciplinary', 'Broker Misconduct'],
+  }),
+  person(6, 'B. L. Madoff', 'NY State Attorney General — Civil Action', 92, {
+    listSource: 'NY State Attorney General',
+    lists: ['State Enforcement', 'Civil Fraud'],
+  }),
+  person(7, 'Madoff, Bernard', 'US DOJ — Criminal Complaint', 94, {
+    listSource: 'US DOJ',
+    lists: ['Criminal Indictment', 'Securities Fraud'],
+  }),
+  person(8, 'Bernardo L. Madoff', 'Interpol Public Records', 89, {
+    listSource: 'Interpol Public Records',
+    lists: ['Civil Fraud', 'Adverse Media'],
+  }),
+  person(9, 'Bernard Madof', 'SIPC — Receivership Filings', 86, {
+    listSource: 'Securities Investor Protection Corp',
+    lists: ['Receivership', 'Asset Recovery'],
+  }),
+  person(10, 'Bernie Madow', 'Bloomberg Adverse Media', 81, {
+    listSource: 'Bloomberg Adverse Media',
+    lists: ['Adverse Media'],
+  }),
+  person(11, 'Bernard Maddoff', 'US DOJ Asset Forfeiture', 84, {
+    listSource: 'US DOJ Asset Forfeiture',
+    lists: ['Asset Forfeiture', 'Financial Crime'],
+  }),
+  person(12, 'Bernard L. Madoffi', 'WSJ Adverse Media', 78, {
+    listSource: 'Wall Street Journal Adverse Media',
+    lists: ['Adverse Media'],
+  }),
+  person(13, 'Madoff, Bernard L.', 'US Bankruptcy Court — SDNY', 90, {
+    listSource: 'US Bankruptcy Court (SDNY)',
+    lists: ['Bankruptcy Filing', 'Receivership'],
+  }),
+  person(14, 'Mark Madoff', 'Forbes — Notable Persons', 72, {
+    listSource: 'Forbes Notable Persons',
+    lists: ['Adverse Media', 'Familial Link'],
+  }),
+  person(15, 'Andrew Madoff', 'FT Adverse Media', 71, {
+    listSource: 'Financial Times Adverse Media',
+    lists: ['Adverse Media', 'Familial Link'],
+  }),
+  person(16, 'Peter Madoff', 'AP News Adverse Media', 70, {
+    listSource: 'Associated Press Adverse Media',
+    lists: ['Adverse Media', 'Familial Link'],
+  }),
+  person(17, 'Ruth Madoff', 'US Trustee Program — Liquidation', 68, {
+    listSource: 'US Trustee Program',
+    lists: ['Liquidation', 'Spousal Link'],
+  }),
+  person(18, 'Bernard L. Madoff', 'PEP — Former NASDAQ Chairman', 86, {
+    listSource: 'PEP Registry',
+    lists: ['Politically Exposed Person', 'Securities Industry'],
+  }),
+  person(19, 'Bernard Modoff', 'Class Action Litigation Records', 79, {
+    listSource: 'Class Action Public Records',
+    lists: ['Civil Litigation', 'Investor Claims'],
+  }),
+  person(20, 'B. Madoff', 'Adverse Media Aggregate', 80, {
+    listSource: 'Adverse Media Aggregate',
+    lists: ['Adverse Media'],
+  }),
+  person(21, 'Bernhard L. Madoff', 'NY Times Adverse Media', 77, {
+    listSource: 'New York Times Adverse Media',
+    lists: ['Adverse Media'],
+  }),
+  person(22, 'Bernard L. Madoff', 'Bernard L. Madoff Investment Securities LLC', 82, {
+    listSource: 'Entity-Linked Officer Records',
+    lists: ['Beneficial Ownership Risk', 'Officer of Defunct Entity'],
+  }),
+  person(23, 'Bernie Madoff', 'High-Risk Officer Registry', 81, {
+    listSource: 'High-Risk Officer Registry',
+    lists: ['Officer Risk'],
+  }),
+  person(24, 'Bernard Madoff', 'Adverse Media — The Economist', 80, {
+    listSource: 'The Economist Adverse Media',
+    lists: ['Adverse Media'],
+  }),
+  person(25, 'Bernard L. Madoff', 'Adverse Media — CNBC', 80, {
+    listSource: 'CNBC Adverse Media',
+    lists: ['Adverse Media'],
+  }),
+  person(26, 'Madoff, Bernard Lawrence', 'Deceased — Public Death Index', 79, {
+    listSource: 'Public Death Index',
+    lists: ['Deceased Person'],
+  }),
+  person(27, 'Bernie Madoff', 'AML Watchlist — Historical', 78, {
+    listSource: 'AML Watchlist (Historical)',
+    lists: ['AML Watchlist'],
+  }),
+  person(28, 'Bernard Madoff', 'Treasury Public Litigation Records', 77, {
+    listSource: 'US Treasury Public Litigation',
+    lists: ['Federal Litigation'],
+  }),
+  person(29, 'B. Maddof', 'KYC Negative News Aggregate', 73, {
+    listSource: 'KYC Negative News',
+    lists: ['Negative News'],
+  }),
+  person(30, 'Bernardo Madov', 'Court Sentencing Records — SDNY', 69, {
+    listSource: 'SDNY Sentencing Records',
+    lists: ['Sentencing Record'],
+  }),
 ]
 
 function HighlightText({ text, term }: { text: string; term: string }) {
@@ -412,7 +361,7 @@ function ArticleDetail({ article, title }: { article: ArticleData; title: string
         </Typography>
         {article.content.map((para, i) => (
           <Typography key={i} variant="body2" sx={{ mb: 1.5, lineHeight: 1.65, fontSize: '0.82rem' }}>
-            <HighlightText text={para} term="Sim Hyon Sop" />
+            <HighlightText text={para} term="Bernard Madoff" />
           </Typography>
         ))}
       </Box>
@@ -754,7 +703,7 @@ function PaginationControls({
   )
 }
 
-const PAGE_SIZE = 3
+const PAGE_SIZE = 5
 
 function App() {
   const [minScore, setMinScore] = useState(50)
@@ -866,7 +815,7 @@ function App() {
           <Grid container spacing={1.5}>
             {/* Row 1 */}
             <Grid size={4}>
-              <TextField label="Name" defaultValue="Sim Hyon Sop" size="small" fullWidth />
+              <TextField label="Name" defaultValue="Bernard Madoff" size="small" fullWidth />
             </Grid>
             <Grid size={4}>
               <TextField label="ID" size="small" fullWidth />
@@ -973,9 +922,21 @@ function App() {
                 {/* Toggles */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pt: 2.5 }}>
                   {[
-                    { label: 'FuzzyDOB', checked: fuzzyDOB, onChange: setFuzzyDOB },
-                    { label: 'WeakAKAs', checked: weakAKAs, onChange: setWeakAKAs },
-                  ].map(({ label, checked, onChange }) => (
+                    {
+                      label: 'FuzzyDOB',
+                      checked: fuzzyDOB,
+                      onChange: setFuzzyDOB,
+                      help:
+                        'Match records whose date of birth is within a tolerance window (years/months) of the search input. Use when DOB data is approximate, partially redacted, or only year is known.',
+                    },
+                    {
+                      label: 'WeakAKAs',
+                      checked: weakAKAs,
+                      onChange: setWeakAKAs,
+                      help:
+                        'Include low-confidence aliases — transliterations, single-name variants, abbreviations, and phonetic matches. Increases recall but adds noise.',
+                    },
+                  ].map(({ label, checked, onChange, help }) => (
                     <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
                       <Switch
                         checked={checked}
@@ -984,7 +945,16 @@ function App() {
                         sx={switchSx}
                       />
                       <Typography variant="caption" sx={{ fontSize: '0.78rem' }}>{label}</Typography>
-                      <InfoOutlinedIcon sx={{ fontSize: 13, color: 'text.secondary', ml: 0.25 }} />
+                      <Tooltip title={help} arrow placement="top">
+                        <InfoOutlinedIcon
+                          sx={{
+                            fontSize: 13,
+                            color: 'text.secondary',
+                            ml: 0.25,
+                            cursor: 'help',
+                          }}
+                        />
+                      </Tooltip>
                     </Box>
                   ))}
                 </Box>
